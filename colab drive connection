@@ -1,0 +1,18 @@
+!apt install -y -qq --fix-broken python-pycurl python-apt 2> /dev/null
+!apt install -y -qq software-properties-common module-init-tools 2> /dev/null
+!add-apt-repository -y ppa:alessandro-strada/ppa 2>&1 > /dev/null
+!apt update -qq 2>&1 > /dev/null
+!apt install -y -qq google-drive-ocamlfuse fuse 2> /dev/null
+from google.colab import auth
+from oauth2client.client import GoogleCredentials
+
+auth.authenticate_user()
+creds = GoogleCredentials.get_application_default()
+
+!google-drive-ocamlfuse -headless -id={creds.client_id} -secret={creds.client_secret} < /dev/null 2>&1 | grep URL
+
+from getpass import getpass
+
+vcode = getpass()
+
+!echo {vcode} | google-drive-ocamlfuse -headless –id={creds.client_id} -secret={creds.client_secret}
